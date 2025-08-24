@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "text": "Talk is cheap. Show me the code.",
+    "wins": 12,
+    "losses": 10
+  },
+  {
+    "id": "2",
+    "text": "Programs must be written for people to read.",
+    "wins": 12,
+    "losses": 13
+  },
+  {
+    "id": "d1e5477e-f75c-442f-8215-517ae3dc6fae",
+    "text": "Honesty is the best policy.",
+    "wins": 4,
+    "losses": 1
+  },
+  {
+    "id": "97a28b41-341d-42cd-8868-45737a0e2751",
+    "text": "Good morning!",
+    "wins": 5,
+    "losses": 5
+  },
+  {
+    "id": "d504896b-b774-410b-ad9a-3ce71ebb30b3",
+    "text": "Think big!",
+    "wins": 1,
+    "losses": 3
+  },
+  {
+    "id": "1c7d4862-43aa-49e2-b21f-c98e8d68a16e",
+    "text": "Believe you can and you're halfway there.",
+    "wins": 1,
+    "losses": 1
+  }
+]
