@@ -15,7 +15,7 @@ const App = () => {
                   🧠 QuoteBattle
                 </a>
               </div>
-              <div className="flex flex-row space-x-6 text-white text-lg">
+              <div className="flex flex-col md:flex-row mt-10 md:mt-0 space-y-2 md:space-y-0 md:space-x-6 text-white text-lg">
                 <a href="/" className="hover:text-purple-400 transition">Home</a>
                 <a href="/leaderboard" className="hover:text-purple-400 transition">Leaderboard</a>
                 <a href="/submit" className="hover:text-purple-400 transition">Submit</a>
