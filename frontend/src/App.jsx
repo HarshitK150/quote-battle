@@ -7,7 +7,7 @@ const App = () => {
   return (
     <Router>
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-        <nav className="backdrop-blur-md bg-gray-900/80 shadow-lg sticky top-0 z-50">
+        <nav className="backdrop-blur-md bg-gray-800/90 shadow-lg border-b border-gray-700 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
               <div className="flex-shrink-0">
