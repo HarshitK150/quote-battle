@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import QuoteCard from '../components/QuoteCard';
-import axios from 'axios';
+import axios from '../lib/axios';
 
 const Home = () => {
   const [pair, setPair] = useState([]);
