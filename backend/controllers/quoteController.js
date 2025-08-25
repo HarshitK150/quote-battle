@@ -1,66 +1,78 @@
-const { readQuotes, writeQuotes } = require('../utils/fileHandler');
+const { readQuotes, writeQuote } = require('../utils/dbHandler');
 const { v4: uuidv4 } = require('uuid');
 
 // GET /api/quotes/random-pair
-exports.getRandomPair = (req, res) => {
-  const quotes = readQuotes();
+exports.getRandomPair = async (req, res) => {
+  try {
+    const quotes = await readQuotes();
 
-  if (quotes.length < 2) {
-    return res.status(400).json({ error: 'Not enough quotes to generate a pair.' });
+    if (quotes.length < 2) {
+      return res.status(400).json({ error: 'Not enough quotes to generate a pair.' });
+    }
+
+    const shuffled = quotes.sort(() => 0.5 - Math.random());
+    const pair = shuffled.slice(0, 2);
+    res.json(pair);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch quotes.' });
   }
-
-  const shuffled = quotes.sort(() => 0.5 - Math.random());
-  const pair = shuffled.slice(0, 2);
-  res.json(pair);
 };
 
 // POST /api/quotes/vote
-exports.vote = (req, res) => {
+exports.vote = async (req, res) => {
   const { winnerId, loserId } = req.body;
 
   if (!winnerId || !loserId) {
     return res.status(400).json({ error: 'Both winnerId and loserId are required.' });
   }
 
-  const quotes = readQuotes();
-  const winner = quotes.find(q => q.id === winnerId);
-  const loser = quotes.find(q => q.id === loserId);
+  try {
+    const quotes = await readQuotes();
 
-  if (!winner || !loser) {
-    return res.status(404).json({ error: 'Quote not found.' });
+    const winner = quotes.find(q => q.id === winnerId);
+    const loser = quotes.find(q => q.id === loserId);
+
+    if (!winner || !loser) {
+      return res.status(404).json({ error: 'Quote not found.' });
+    }
+
+    winner.wins = (winner.wins || 0) + 1;
+    loser.losses = (loser.losses || 0) + 1;
+
+    await updateQuotes([winner, loser]);
+
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Vote failed.' });
   }
-
-  winner.wins = (winner.wins || 0) + 1;
-  loser.losses = (loser.losses || 0) + 1;
-
-  writeQuotes(quotes);
-  res.json({ success: true });
 };
 
 // GET /api/quotes/leaderboard
-exports.getLeaderboard = (req, res) => {
-  const quotes = readQuotes();
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const quotes = await readQuotes();
 
-  const sorted = quotes
-    .map(q => ({
-      ...q,
-      ratio: (q.wins || 0) / ((q.wins || 0) + (q.losses || 0) || 1),
-    }))
-    .sort((a, b) => b.ratio - a.ratio)
-    .slice(0, 10); // top 10
+    const sorted = quotes
+      .map(q => ({
+        ...q,
+        ratio: (q.wins || 0) / ((q.wins || 0) + (q.losses || 0) || 1),
+      }))
+      .sort((a, b) => b.ratio - a.ratio)
+      .slice(0, 10); // top 10
 
-  res.json(sorted);
+    res.json(sorted);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to load leaderboard.' });
+  }
 };
 
 // POST /api/quotes
-exports.addQuote = (req, res) => {
+exports.addQuote = async (req, res) => {
   const { text } = req.body;
 
   if (!text || text.trim() === '') {
     return res.status(400).json({ error: 'Quote text is required.' });
   }
-
-  const quotes = readQuotes();
 
   const newQuote = {
     id: uuidv4(),
@@ -69,8 +81,10 @@ exports.addQuote = (req, res) => {
     losses: 0,
   };
 
-  quotes.push(newQuote);
-  writeQuotes(quotes);
-
-  res.status(201).json({ success: true, id: newQuote.id });
+  try {
+    await writeQuote(newQuote);
+    res.status(201).json({ success: true, id: newQuote.id });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to add quote.' });
+  }
 };
