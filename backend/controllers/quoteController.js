@@ -1,4 +1,4 @@
-const { readQuotes, writeQuote } = require('../utils/dbHandler');
+const { readQuotes, writeQuote, updateQuotes } = require('../utils/dbHandler');
 const { v4: uuidv4 } = require('uuid');
 
 // GET /api/quotes/random-pair
@@ -43,7 +43,8 @@ exports.vote = async (req, res) => {
 
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ error: 'Vote failed.' });
+    console.error('Error inserting quote:', err);
+    res.status(500).json({ error: err.message });
   }
 };
 
