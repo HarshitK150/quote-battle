@@ -11,7 +11,7 @@ router.post('/vote', quoteController.vote);
 // GET /api/quotes/leaderboard
 router.get('/leaderboard', quoteController.getLeaderboard);
 
-// POST /api/quotes
+// POST /api/quotes/
 router.post('/', quoteController.addQuote);
 
 module.exports = router;

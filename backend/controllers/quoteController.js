@@ -56,9 +56,25 @@ exports.getLeaderboard = async (req, res) => {
     const sorted = quotes
       .map(q => ({
         ...q,
+        total: q.wins + q.losses,
         ratio: (q.wins || 0) / ((q.wins || 0) + (q.losses || 0) || 1),
       }))
-      .sort((a, b) => b.ratio - a.ratio)
+      .sort((a, b) => {
+        // Rule 1: items with <=5 total go last
+        const aIsLow = a.total <= 5;
+        const bIsLow = b.total <= 5;
+        if (aIsLow !== bIsLow) {
+          return aIsLow ? 1 : -1;
+        }
+    
+        // Rule 2: higher ratio first
+        if (b.ratio !== a.ratio) {
+          return b.ratio - a.ratio;
+        }
+    
+        // Rule 3: tie-break: higher total first
+        return b.total - a.total;
+      })
       .slice(0, 10); // top 10
 
     res.json(sorted);
